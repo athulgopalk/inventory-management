@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "itemname": "Phone",
+      "category": "Electronics",
+      "quantity": 2
+    },
+    {
+      "id": 2,
+      "itemname": "Pant",
+      "category": "Clothing",
+      "quantity": 2
+    },
+    {
+      "id": "3",
+      "itemname": "hello",
+      "category": "Electronics",
+      "quantity": "2"
+    },
+    {
+      "id": "2",
+      "itemname": "Phone",
+      "category": "Clothing",
+      "quantity": "3"
+    },
+    {
+      "id": "3",
+      "itemname": "Hello",
+      "category": "Electronics",
+      "quantity": "4"
+    }
+  ]
+}
