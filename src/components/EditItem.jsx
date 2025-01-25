@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
-
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const EditItem = () => {
   const [id, setId] = useState("");
@@ -9,32 +8,57 @@ const EditItem = () => {
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
   const [validation, setValidation] = useState(false);
+
   const navigate = useNavigate();
+  const { itemid } = useParams();
+
+  useEffect(() => {
+   
+    const fetchItem = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/items/${itemid}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch item with ID: ${itemid}`);
+        }
+        const data = await response.json();
+        setId(data.id);
+        setItemName(data.itemname);
+        setCategory(data.category);
+        setQuantity(data.quantity);
+      } catch (error) {
+        console.error("Error fetching item:", error.message);
+      }
+    };
+
+    fetchItem();
+  }, [itemid]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const itemdata = { id, itemname, category, quantity };
+    const updatedData = { id, itemname, category, quantity };
 
     try {
-      const response = await fetch("http://localhost:8000/items", {
-        method: "POST",
+      const response = await fetch(`http://localhost:8000/items/${itemid}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(itemdata),
+        body: JSON.stringify(updatedData),
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      alert("Item Added succesfully", await response.json());
+      alert("Item updated successfully");
       navigate("/");
     } catch (error) {
-      console.error("Failed to save item:", error.message);
+      console.error("Failed to update item:", error.message);
     }
   };
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-gray-100 z-50">
+    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-gray-100 z-50 p-3">
       <div className="bg-white w-96 p-6 rounded-lg shadow-lg relative">
         <Link
           to="/"
@@ -42,9 +66,7 @@ const EditItem = () => {
         >
           <MdClose size={24} />
         </Link>
-        <h1 className="text-2xl font-semibold mb-6 text-center">
-          Add New Item
-        </h1>
+        <h1 className="text-2xl font-semibold mb-6 text-center">Edit Item</h1>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label
@@ -61,12 +83,8 @@ const EditItem = () => {
               value={id}
               onChange={(e) => setId(e.target.value)}
               className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              disabled
             />
-            {id.length === 0 && validation && (
-              <span className=" text-xs text-red-400">
-                Please enter the id in digits
-              </span>
-            )}
           </div>
           <div>
             <label
@@ -85,8 +103,8 @@ const EditItem = () => {
               className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
             {itemname.length === 0 && validation && (
-              <span className=" text-xs text-red-400">
-                Please enter the itemname
+              <span className="text-xs text-red-400">
+                Please enter the item name
               </span>
             )}
           </div>
@@ -101,9 +119,9 @@ const EditItem = () => {
               id="category"
               name="category"
               required
-              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
             >
               <option value="">Select Category</option>
               <option value="Electronics">Electronics</option>
@@ -113,7 +131,7 @@ const EditItem = () => {
               <option value="Furniture">Furniture</option>
             </select>
             {category.length === 0 && validation && (
-              <span className=" text-xs text-red-400">
+              <span className="text-xs text-red-400">
                 Please select the category
               </span>
             )}
@@ -135,7 +153,7 @@ const EditItem = () => {
               className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
             {quantity.length === 0 && validation && (
-              <span className=" text-xs text-red-400">
+              <span className="text-xs text-red-400">
                 Please enter the quantity
               </span>
             )}
@@ -146,13 +164,13 @@ const EditItem = () => {
               onMouseDown={() => setValidation(true)}
               className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-1 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
             >
-              Save
+              Update
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-}
+};
 
-export default EditItem
+export default EditItem;

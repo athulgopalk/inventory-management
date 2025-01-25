@@ -33,7 +33,7 @@ const CreateItem = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-gray-100 z-50">
+    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-gray-100 z-50 p-3">
       <div className="bg-white w-96 p-6 rounded-lg shadow-lg relative">
         <Link
           to="/"
